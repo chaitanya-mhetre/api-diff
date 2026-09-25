@@ -1,0 +1,49 @@
+openapi: 3.0.3
+info: {title: Bookstore, version: "1.0.0"}
+paths:
+  /books:
+    get:
+      summary: List books
+      parameters:
+        - {name: limit, in: query, schema: {type: integer, maximum: 100}}
+        - {name: genre, in: query, schema: {type: string, enum: [fiction, science, history]}}
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema: {type: array, items: {$ref: "#/components/schemas/Book"}}
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/NewBook"}
+      responses:
+        "201": {description: created, content: {application/json: {schema: {$ref: "#/components/schemas/Book"}}}}
+        "422": {description: invalid}
+  /books/{id}:
+    get:
+      parameters: [{name: id, in: path, required: true, schema: {type: integer}}]
+      responses:
+        "200": {description: ok, content: {application/json: {schema: {$ref: "#/components/schemas/Book"}}}}
+        "404": {description: not found}
+    delete:
+      parameters: [{name: id, in: path, required: true, schema: {type: integer}}]
+      responses: {"204": {description: deleted}}
+components:
+  schemas:
+    NewBook:
+      type: object
+      required: [title]
+      properties:
+        title: {type: string, maxLength: 200}
+        isbn: {type: string}
+    Book:
+      type: object
+      required: [id, title, author]
+      properties:
+        id: {type: integer}
+        title: {type: string}
+        author: {type: string}
+        status: {type: string, enum: [available, loaned]}

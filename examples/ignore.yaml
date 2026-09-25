@@ -1,0 +1,3 @@
+ignore:
+  - rule: response-enum-value-added
+    reason: "all known clients handle unknown statuses (checked with the mobile team)"

@@ -1,0 +1,10 @@
+Pet:
+  type: object
+  required: [name]
+  properties:
+    name: {type: string}
+    owner: {$ref: "#/Owner"}
+Owner:
+  type: object
+  properties:
+    pets: {type: array, items: {$ref: "#/Pet"}}
