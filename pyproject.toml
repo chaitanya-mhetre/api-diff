@@ -1,12 +1,24 @@
 [project]
 name = "api-diff"
 version = "0.1.0"
-description = "Add your description here"
+description = "Detect breaking changes between two OpenAPI 3.x specs (CLI, GitHub Action, pytest helper)"
 readme = "README.md"
 authors = [
     { name = "Chaitanya Mhetre", email = "mhetrechaitanya06@gmail.com" }
 ]
 requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["openapi", "api", "breaking-changes", "ci", "swagger", "compatibility"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Software Development :: Quality Assurance",
+    "Typing :: Typed",
+]
 dependencies = [
     "pydantic>=2.13.5",
     "pyyaml>=6.0.3",
