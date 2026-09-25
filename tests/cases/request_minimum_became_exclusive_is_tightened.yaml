@@ -1,0 +1,24 @@
+# minimum 0 -> exclusiveMinimum 0: zero is no longer accepted. This really is a tightening.
+old_paths:
+  /jobs:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                x: {type: number, minimum: 0}
+      responses: {"200": {description: ok}}
+new_paths:
+  /jobs:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                x: {type: number, exclusiveMinimum: 0}
+      responses: {"200": {description: ok}}
+expected: [request-constraint-tightened]

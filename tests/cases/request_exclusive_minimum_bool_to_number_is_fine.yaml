@@ -1,0 +1,24 @@
+# 3.0 boolean exclusiveMinimum and 3.1 numeric exclusiveMinimum mean the same (seen in OpenAI's spec).
+old_paths:
+  /jobs:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                x: {type: number, minimum: 0, exclusiveMinimum: true}
+      responses: {"200": {description: ok}}
+new_paths:
+  /jobs:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                x: {type: number, exclusiveMinimum: 0}
+      responses: {"200": {description: ok}}
+expected: []

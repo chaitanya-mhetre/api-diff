@@ -41,6 +41,23 @@ def _canonical(value: Any) -> str:
     return json.dumps(value, sort_keys=True, default=str)
 
 
+def _bounds(schema: dict[str, Any]) -> dict[str, Any]:
+    """Rewrite OpenAPI 3.0 boolean ``exclusiveMinimum``/``exclusiveMaximum`` into the 3.1 number form.
+
+    ``{minimum: 0, exclusiveMinimum: true}`` (3.0) and ``{exclusiveMinimum: 0}`` (3.1) mean the same
+    thing. Without this, a spec migrating between them looks like a new constraint was added.
+    """
+    out = dict(schema)
+    for excl, inclusive in (("exclusiveMinimum", "minimum"), ("exclusiveMaximum", "maximum")):
+        flag = out.get(excl)
+        if isinstance(flag, bool):
+            if flag and inclusive in out:
+                out[excl] = out.pop(inclusive)
+            else:
+                del out[excl]
+    return out
+
+
 def _ref_members(members: list[Any]) -> dict[str, tuple[int, Any]]:
     """Map each ``$ref`` string in a oneOf/anyOf list to (position, member)."""
     out: dict[str, tuple[int, Any]] = {}
@@ -533,13 +550,22 @@ class Differ:
         o: dict[str, Any],
         n: dict[str, Any],
     ) -> None:
+        o, n = _bounds(o), _bounds(n)
+
         def num(schema: dict[str, Any], key: str) -> int | float | None:
             value = schema.get(key)
             return value if isinstance(value, (int, float)) and not isinstance(value, bool) else None
 
+        def lt(x: float, y: float) -> bool:
+            # Past 2**53, JSON numbers aren't exact: a JS serializer writes int64 max as
+            # 9223372036854776000. Compare as doubles there so re-serialization isn't a "change".
+            if max(abs(x), abs(y)) > 2**53:
+                return float(x) < float(y)
+            return x < y
+
         for key in UPPER_BOUNDS:
             a, b = num(o, key), num(n, key)
-            if direction == "request" and b is not None and (a is None or b < a):
+            if direction == "request" and b is not None and (a is None or lt(b, a)):
                 self._emit(
                     "request-constraint-tightened",
                     loc,
@@ -548,7 +574,7 @@ class Differ:
                     a,
                     b,
                 )
-            if direction == "response" and a is not None and (b is None or b > a):
+            if direction == "response" and a is not None and (b is None or lt(a, b)):
                 self._emit(
                     "response-constraint-loosened",
                     loc,
@@ -559,7 +585,7 @@ class Differ:
                 )
         for key in LOWER_BOUNDS:
             a, b = num(o, key), num(n, key)
-            if direction == "request" and b is not None and (a is None or b > a):
+            if direction == "request" and b is not None and (a is None or lt(a, b)):
                 self._emit(
                     "request-constraint-tightened",
                     loc,
@@ -568,7 +594,7 @@ class Differ:
                     a,
                     b,
                 )
-            if direction == "response" and a is not None and (b is None or b < a):
+            if direction == "response" and a is not None and (b is None or lt(b, a)):
                 self._emit(
                     "response-constraint-loosened",
                     loc,

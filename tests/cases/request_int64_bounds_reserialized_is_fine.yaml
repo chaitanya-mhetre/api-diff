@@ -1,0 +1,24 @@
+# int64 limits written by a JS serializer (9223372036854776000) vs exactly: same double, no change.
+old_paths:
+  /jobs:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                x: {type: integer, minimum: -9223372036854776000, maximum: 9223372036854776000}
+      responses: {"200": {description: ok}}
+new_paths:
+  /jobs:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                x: {type: integer, minimum: -9223372036854775808, maximum: 9223372036854775807}
+      responses: {"200": {description: ok}}
+expected: []
