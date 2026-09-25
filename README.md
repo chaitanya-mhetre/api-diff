@@ -150,12 +150,16 @@ See [docs/benchmarks.md](docs/benchmarks.md).
 - No Swagger 2.0, AsyncAPI or GraphQL.
 - `discriminator`, `additionalProperties`, `readOnly`/`writeOnly`, security schemes, headers and links aren't analysed.
 - The GitHub Action compares a single file (`git show base:spec`); specs split across files with relative `$ref`s need the CLI.
-- It hasn't been compared against oasdiff on a real-world corpus yet (TBD).
+- Compared against oasdiff on 10 real spec version pairs ([docs/comparison-oasdiff.md](docs/comparison-oasdiff.md)).
+  oasdiff finds more (partly policy: api-diff grades response enum additions and loosened response bounds as
+  warnings) and is 2–7× faster. The comparison found and fixed three api-diff bugs.
+- No dedicated rules for added response `oneOf`/`anyOf` variants or removed request variants (only a
+  `composition-changed` warning), and an added/removed `format` isn't reported.
 
 ## Roadmap
 - Response headers and security-scheme changes
 - `readOnly`/`writeOnly` direction handling
-- A corpus comparison against oasdiff to measure disagreements
+- Dedicated rules for added/removed `oneOf`/`anyOf` variants (the largest real gap found vs oasdiff)
 
 ## Contributing
 See [CONTRIBUTING.md](CONTRIBUTING.md). Licence: MIT.

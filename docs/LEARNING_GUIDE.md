@@ -104,8 +104,20 @@ would let a crafted input inject shell commands (a well-known Actions injection 
     would hide that.
 17. **Why is removing an optional response property only a warning?** The contract said it might be missing, so correct clients handle that.
     In practice many clients read it when present, so it's flagged.
+18. **How did you validate api-diff against an established tool?** I ran it and oasdiff on 10 real historical version pairs of
+    public specs, pinned to commit SHAs (`comparison/`), compared the sets of operations each flagged, and classified every
+    disagreement group by hand: policy difference, api-diff bug, api-diff gap, or oasdiff noise. That found three real bugs. The
+    biggest lesson was that a naive agreement percentage would be misleading: most disagreement came from one 3.0 → 3.1 migration
+    and from deliberate severity choices (see `docs/comparison-oasdiff.md`).
+19. **Why is `anyOf: [X, {type: "null"}]` special?** OpenAPI 3.1 dropped `nullable`, so that's how 3.1 says "X or null". A differ that
+    treats it as an opaque `anyOf` stops comparing X and invents removals. api-diff unwraps it into X plus `null` (`Differ._normalize`)
+    so both spellings compare as equal.
+20. **Why compare numbers as doubles above 2^53?** JSON numbers are usually parsed as IEEE doubles, which can't represent every
+    integer past 2^53. A JavaScript serializer writes int64 max as `9223372036854776000`. Treating that as a change is noise, so
+    `_constraints` compares large bounds as doubles.
 
 ## 5. Try it yourself
+- Add a dedicated rule for a new response `oneOf`/`anyOf` variant (the largest real gap in `docs/comparison-oasdiff.md`).
 - Add a rule for response header removal, with fixtures.
 - Handle `readOnly` (only in responses) and `writeOnly` (only in requests) properties.
 - Run api-diff and oasdiff on a few public specs' version histories and write up where they disagree.
