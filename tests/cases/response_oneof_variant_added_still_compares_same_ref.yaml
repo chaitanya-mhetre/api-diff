@@ -1,0 +1,37 @@
+# A oneOf gains a variant, and inside a surviving variant (same $ref) a required property becomes
+# optional. The warning for the changed oneOf must not hide the breaking change inside
+# the variant (found on OpenAI's spec: ComputerToolCall.action).
+version: "3.1.0"
+old_components:
+  schemas:
+    Click: {type: object, required: [x, button], properties: {x: {type: integer}, button: {type: string}}}
+    Scroll: {type: object, required: [dy], properties: {dy: {type: integer}}}
+new_components:
+  schemas:
+    Click: {type: object, required: [x], properties: {x: {type: integer}, button: {type: string}}}
+    Scroll: {type: object, required: [dy], properties: {dy: {type: integer}}}
+    Drag: {type: object, required: [path], properties: {path: {type: array, items: {type: integer}}}}
+old_paths:
+  /actions:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - {$ref: "#/components/schemas/Click"}
+                  - {$ref: "#/components/schemas/Scroll"}
+new_paths:
+  /actions:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - {$ref: "#/components/schemas/Drag"}
+                  - {$ref: "#/components/schemas/Click"}
+                  - {$ref: "#/components/schemas/Scroll"}
+expected: [composition-changed, response-property-became-optional]

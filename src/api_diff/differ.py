@@ -41,6 +41,15 @@ def _canonical(value: Any) -> str:
     return json.dumps(value, sort_keys=True, default=str)
 
 
+def _ref_members(members: list[Any]) -> dict[str, tuple[int, Any]]:
+    """Map each ``$ref`` string in a oneOf/anyOf list to (position, member)."""
+    out: dict[str, tuple[int, Any]] = {}
+    for i, member in enumerate(members):
+        if isinstance(member, dict) and isinstance(member.get("$ref"), str):
+            out.setdefault(member["$ref"], (i, member))
+    return out
+
+
 @dataclass
 class _Node:
     """A schema-ish node after ``$ref`` resolution, remembering which document it came from."""
@@ -621,6 +630,25 @@ class Differ:
                     op,
                     f"{keyword} changed; review manually",
                 )
+                if isinstance(a, list) and isinstance(b, list):
+                    # Members were added or removed. Positions no longer line up, but members that
+                    # point at the same $ref are the same variant, so still compare those. Otherwise
+                    # a change inside a surviving variant hides behind the "review manually" warning.
+                    old_refs = _ref_members(a)
+                    new_refs = _ref_members(b)
+                    for ref in sorted(old_refs.keys() & new_refs.keys()):
+                        i, x = old_refs[ref]
+                        _, y = new_refs[ref]
+                        self._schema(
+                            op,
+                            f"{loc}/{keyword}/{i}",
+                            direction,
+                            x,
+                            old_base,
+                            y,
+                            new_base,
+                            depth + 1,
+                        )
 
     def _properties(
         self,
