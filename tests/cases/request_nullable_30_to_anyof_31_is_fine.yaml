@@ -1,0 +1,31 @@
+# Same meaning written two ways: 3.0 `nullable: true` vs 3.1 `anyOf` with a null branch (via $ref).
+version: "3.1.0"
+old_paths:
+  /runs:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                note: {type: string, nullable: true}
+      responses: {"200": {description: ok}}
+new_components:
+  schemas:
+    Note: {type: string}
+new_paths:
+  /runs:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                note:
+                  anyOf:
+                    - {$ref: "#/components/schemas/Note"}
+                    - {type: "null"}
+      responses: {"200": {description: ok}}
+expected: []

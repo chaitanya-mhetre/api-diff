@@ -105,6 +105,37 @@ class Differ:
             schema["required"] = sorted(required)
         return schema
 
+    def _normalize(self, spec: Spec, node: _Node, depth: int = 0) -> dict[str, Any]:
+        """Flatten ``allOf`` and unwrap nullable unions.
+
+        OpenAPI 3.1 has no ``nullable``; specs write ``anyOf: [X, {type: "null"}]`` instead (OpenAI's
+        spec switched to this between 3.0 and 3.1). Without unwrapping, every such change looks like
+        an opaque ``anyOf`` edit and nothing inside ``X`` is compared. So ``X`` is merged in and
+        ``null`` is added to its type, which makes it equivalent to the 3.0 ``nullable: true`` form.
+        """
+        schema = self._flatten(spec, node)
+        for keyword in ("anyOf", "oneOf"):
+            members = schema.get(keyword)
+            if not isinstance(members, list) or len(members) < 2 or depth > MAX_DEPTH:
+                continue
+            nulls = [m for m in members if isinstance(m, dict) and m.get("type") == "null"]
+            others = [m for m in members if m not in nulls]
+            if not nulls or len(others) != 1:
+                continue
+            inner = self._deref(spec, others[0], node.base)
+            if inner is None or inner.base != node.base:
+                continue  # cross-document $ref: nested refs would resolve against the wrong base
+            merged = {k: v for k, v in schema.items() if k != keyword}
+            for key, value in self._normalize(spec, inner, depth + 1).items():
+                merged.setdefault(key, value)
+            raw = merged.get("type")
+            if isinstance(raw, str):
+                merged["type"] = [raw, "null"]
+            elif isinstance(raw, list) and "null" not in raw:
+                merged["type"] = [*raw, "null"]
+            return merged
+        return schema
+
     # ---- entry point ---------------------------------------------------------------------------
 
     def run(self) -> list[Change]:
@@ -357,7 +388,7 @@ class Differ:
             return  # recursive schema: this pair is already being compared higher up
         self._visited.add(key)
 
-        o, n = self._flatten(self.old, old), self._flatten(self.new, new)
+        o, n = self._normalize(self.old, old), self._normalize(self.new, new)
         self._types(op, loc, direction, o, n)
         self._enums(op, loc, direction, o, n)
         self._constraints(op, loc, direction, o, n)

@@ -1,0 +1,25 @@
+version: "3.1.0"
+old_paths:
+  /runs:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                note:
+                  anyOf: [{type: string}, {type: "null"}]
+      responses: {"200": {description: ok}}
+new_paths:
+  /runs:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                note: {type: string}
+      responses: {"200": {description: ok}}
+expected: [request-became-non-nullable]

@@ -1,0 +1,25 @@
+# A self-referencing nullable union (linked list) must not recurse forever.
+version: "3.1.0"
+old_components:
+  schemas:
+    Node:
+      anyOf:
+        - {type: object, properties: {next: {$ref: "#/components/schemas/Node"}, v: {type: string}}}
+        - {type: "null"}
+new_components:
+  schemas:
+    Node:
+      anyOf:
+        - {type: object, properties: {next: {$ref: "#/components/schemas/Node"}, v: {type: integer}}}
+        - {type: "null"}
+old_paths:
+  /list:
+    get:
+      responses:
+        "200": {description: ok, content: {application/json: {schema: {$ref: "#/components/schemas/Node"}}}}
+new_paths:
+  /list:
+    get:
+      responses:
+        "200": {description: ok, content: {application/json: {schema: {$ref: "#/components/schemas/Node"}}}}
+expected: [type-changed]

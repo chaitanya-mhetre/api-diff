@@ -1,0 +1,29 @@
+version: "3.1.0"
+old_paths:
+  /runs:
+    get:
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [id]
+                properties:
+                  id: {type: string}
+new_paths:
+  /runs:
+    get:
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [id]
+                properties:
+                  id:
+                    oneOf: [{type: string}, {type: "null"}]
+expected: [response-became-nullable]
