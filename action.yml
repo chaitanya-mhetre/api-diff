@@ -1,0 +1,44 @@
+name: "api-diff"
+description: "Fail a pull request that introduces breaking OpenAPI changes"
+author: "Chaitanya Mhetre"
+branding: {icon: "git-pull-request", color: "red"}
+inputs:
+  spec:
+    description: "Path to the OpenAPI file in the repository"
+    required: true
+  base-ref:
+    description: "Branch to compare against (defaults to the PR base branch)"
+    required: false
+    default: ${{ github.base_ref }}
+  fail-on:
+    description: "breaking | warning | info | never"
+    required: false
+    default: "breaking"
+  ignore:
+    description: "Optional path to an ignore YAML file"
+    required: false
+    default: ""
+runs:
+  using: "composite"
+  steps:
+    - uses: astral-sh/setup-uv@v6
+    - name: Compare against base branch
+      shell: bash
+      env:
+        SPEC: ${{ inputs.spec }}
+        BASE_REF: ${{ inputs.base-ref }}
+        FAIL_ON: ${{ inputs.fail-on }}
+        IGNORE: ${{ inputs.ignore }}
+      run: |
+        set -euo pipefail
+        if [ -z "$BASE_REF" ]; then echo "::error::no base-ref (not a pull_request event?)"; exit 2; fi
+        git fetch --no-tags --depth=1 origin "$BASE_REF"
+        if ! git show "FETCH_HEAD:$SPEC" > "$RUNNER_TEMP/api-diff-base.yaml" 2>/dev/null; then
+          echo "::notice::$SPEC does not exist on $BASE_REF; nothing to compare"
+          exit 0
+        fi
+        ARGS=()
+        if [ -n "$IGNORE" ]; then ARGS+=(--ignore "$IGNORE"); fi
+        RUN=(uvx --from "$GITHUB_ACTION_PATH" api-diff diff "$RUNNER_TEMP/api-diff-base.yaml" "$SPEC")
+        "${RUN[@]}" --format markdown --fail-on never "${ARGS[@]}" >> "$GITHUB_STEP_SUMMARY"
+        "${RUN[@]}" --format github --fail-on "$FAIL_ON" "${ARGS[@]}"
