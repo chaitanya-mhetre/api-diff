@@ -1,4 +1,4 @@
-.PHONY: check lint fmt type test build
+.PHONY: check lint fmt type test build compare
 check: lint type test
 lint:
 	uv run ruff check .
@@ -12,3 +12,6 @@ test:
 	uv run pytest -q
 build:
 	uv build
+compare:  # needs network + oasdiff (PATH or $$OASDIFF); see docs/comparison-oasdiff.md
+	uv run python comparison/compare.py
+	uv run python comparison/analyze.py > comparison/results/summary.md

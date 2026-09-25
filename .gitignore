@@ -6,3 +6,8 @@ __pycache__/
 .ruff_cache/
 dist/
 .env
+
+# comparison/: fetched third-party specs and per-pair raw output are not committed
+comparison/.cache/
+comparison/results/*.json
+!comparison/results/summary.json

@@ -1,0 +1,82 @@
+{
+  "_note": "Real historical versions of public OpenAPI specs. Specs are NOT committed; compare.py fetches them by exact commit SHA.",
+  "pairs": [
+    {
+      "id": "openai-2025-04_2026-08",
+      "repo": "openai/openai-openapi",
+      "path": "openapi.yaml",
+      "base": "498c71ddf6f1c45b983f972ccabca795da211a3e",
+      "revision": "23e6f5b4641b7e0a62e879de867c8bac98cf8bd7"
+    },
+    {
+      "id": "openai-2026-08_2026-09",
+      "repo": "openai/openai-openapi",
+      "path": "openapi.yaml",
+      "base": "23e6f5b4641b7e0a62e879de867c8bac98cf8bd7",
+      "revision": "5b29d7c599e21828f77ff7a33dc944332d2983a2"
+    },
+    {
+      "id": "twilio-verify-2024-10_2026-09",
+      "repo": "twilio/twilio-oai",
+      "path": "spec/yaml/twilio_verify_v2.yaml",
+      "base": "d8616efe3c2deaa899bc47bb5c4970fac693b0b3",
+      "revision": "5aa7f31977ce5812f7b7bc1f46a38555ebaa2888"
+    },
+    {
+      "id": "twilio-2024-09_2025-10",
+      "repo": "twilio/twilio-oai",
+      "path": "spec/yaml/twilio_api_v2010.yaml",
+      "base": "78d80bbe00f7b683ed24e27660c9647e5d4f15e2",
+      "revision": "af3dd9e9d5db6c50681cbab3ae93bfae6ded3a23"
+    },
+    {
+      "id": "twilio-2026-03_2026-09",
+      "repo": "twilio/twilio-oai",
+      "path": "spec/yaml/twilio_api_v2010.yaml",
+      "base": "5fc16b940196dee72ab20f8f4befa69b96acd5f9",
+      "revision": "5aa7f31977ce5812f7b7bc1f46a38555ebaa2888"
+    },
+    {
+      "id": "box-2025-12_2026-05",
+      "repo": "box/box-openapi",
+      "path": "openapi.json",
+      "base": "20adfdef75a48091ed831f2cd44f7a892bf5352f",
+      "revision": "cba9a37a9fbafc12fac70f3d750fe370e888e353"
+    },
+    {
+      "id": "box-2026-07_2026-09",
+      "repo": "box/box-openapi",
+      "path": "openapi.json",
+      "base": "14e37bb6149a73aabaa45853a5cdf6482af4dfeb",
+      "revision": "933ec4c5d9f4dbdaaa823efa3a083cf177aecbde"
+    },
+    {
+      "id": "pagerduty-2026-06_2026-09",
+      "repo": "PagerDuty/api-schema",
+      "path": "reference/REST/openapiv3.json",
+      "base": "2fa7a1148022838fdf9744aa5c23f909cc1331ab",
+      "revision": "a177c5c01bcdf818e9563f5f2388c3bfaf2d6f79"
+    },
+    {
+      "id": "k8s-apps-v1-1.30_1.34",
+      "repo": "kubernetes/kubernetes",
+      "path": "api/openapi-spec/v3/apis__apps__v1_openapi.json",
+      "base": "7c48c2bd72b9bf5c44d21d7338cc7bea77d0ad2a",
+      "revision": "f28b4c9efbca5c5c0af716d9f2d5702667ee8a45"
+    },
+    {
+      "id": "k8s-batch-v1-1.30_1.34",
+      "repo": "kubernetes/kubernetes",
+      "path": "api/openapi-spec/v3/apis__batch__v1_openapi.json",
+      "base": "7c48c2bd72b9bf5c44d21d7338cc7bea77d0ad2a",
+      "revision": "f28b4c9efbca5c5c0af716d9f2d5702667ee8a45"
+    }
+  ],
+  "_excluded": [
+    {
+      "repo": "stripe/openapi",
+      "path": "openapi/spec3.yaml",
+      "reason": "oasdiff 1.32.1 was OOM-killed comparing two ~7 MB spec3.yaml versions on the 14 GB dev laptop (about 5 GB free at the time); replaced with smaller specs"
+    }
+  ]
+}
