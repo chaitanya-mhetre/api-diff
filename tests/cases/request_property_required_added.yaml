@@ -1,0 +1,19 @@
+old_paths:
+  /users:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [email], properties: {email: {type: string}, name: {type: string}}}
+      responses: {"201": {description: created}}
+new_paths:
+  /users:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [email, phone], properties: {email: {type: string}, name: {type: string}, phone: {type: string}}}
+      responses: {"201": {description: created}}
+expected: [request-property-required-added]

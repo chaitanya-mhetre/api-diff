@@ -1,0 +1,16 @@
+old_paths:
+  /upload:
+    post:
+      requestBody:
+        content:
+          application/json: {schema: {type: object}}
+          application/xml: {schema: {type: object}}
+      responses: {"200": {description: ok}}
+new_paths:
+  /upload:
+    post:
+      requestBody:
+        content:
+          application/json: {schema: {type: object}}
+      responses: {"200": {description: ok}}
+expected: [request-media-type-removed]

@@ -1,0 +1,13 @@
+old_paths:
+  /a:
+    get:
+      responses:
+        "200":
+          content: {application/json: {schema: {type: object}}, text/csv: {schema: {type: string}}}
+new_paths:
+  /a:
+    get:
+      responses:
+        "200":
+          content: {application/json: {schema: {type: object}}}
+expected: [response-media-type-removed]

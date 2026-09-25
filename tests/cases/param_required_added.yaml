@@ -1,0 +1,11 @@
+old_paths:
+  /items:
+    get:
+      parameters: []
+      responses: {"200": {description: ok}}
+new_paths:
+  /items:
+    get:
+      parameters: [{name: tenant, in: header, required: true, schema: {type: string}}]
+      responses: {"200": {description: ok}}
+expected: [parameter-required-added]

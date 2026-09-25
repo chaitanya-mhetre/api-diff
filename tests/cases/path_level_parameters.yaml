@@ -1,0 +1,9 @@
+old_paths:
+  /orgs/{org}/items:
+    parameters: [{name: org, in: path, required: true, schema: {type: string}}]
+    get: {responses: {"200": {description: ok}}}
+new_paths:
+  /orgs/{org}/items:
+    parameters: [{name: org, in: path, required: true, schema: {type: integer}}]
+    get: {responses: {"200": {description: ok}}}
+expected: [type-changed]

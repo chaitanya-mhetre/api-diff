@@ -1,0 +1,20 @@
+description: Removing an operation breaks callers.
+old_paths:
+  /users/{id}:
+      get:
+        responses:
+          "200":
+            content:
+              application/json:
+                schema: {type: object, required: [id, name], properties: {id: {type: integer}, name: {type: string}, nick: {type: string}}}
+      delete: {responses: {"204": {description: ok}}}
+new_paths:
+  /users/{id}:
+      get:
+        responses:
+          "200":
+            content:
+              application/json:
+                schema: {type: object, required: [id, name], properties: {id: {type: integer}, name: {type: string}, nick: {type: string}}}
+
+expected: [operation-removed]

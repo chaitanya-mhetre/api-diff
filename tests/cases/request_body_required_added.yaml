@@ -1,0 +1,8 @@
+old_paths:
+  /ping: {post: {responses: {"200": {description: ok}}}}
+new_paths:
+  /ping:
+    post:
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses: {"200": {description: ok}}
+expected: [request-body-required-added]

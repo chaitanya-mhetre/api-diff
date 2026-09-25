@@ -1,0 +1,11 @@
+old_paths:
+  /items:
+    get:
+      parameters: [{name: code, in: query, schema: {type: string, pattern: '^[A-Z]+$'}}]
+      responses: {"200": {description: ok}}
+new_paths:
+  /items:
+    get:
+      parameters: [{name: code, in: query, schema: {type: string, pattern: '^[A-Z]{3}$'}}]
+      responses: {"200": {description: ok}}
+expected: [pattern-changed]

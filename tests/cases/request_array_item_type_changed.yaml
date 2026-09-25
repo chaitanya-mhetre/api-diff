@@ -1,0 +1,19 @@
+old_paths:
+  /users:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, properties: {tags: {type: array, items: {type: string}}}}
+      responses: {"201": {description: created}}
+new_paths:
+  /users:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, properties: {tags: {type: array, items: {type: integer}}}}
+      responses: {"201": {description: created}}
+expected: [type-changed]

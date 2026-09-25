@@ -1,0 +1,18 @@
+version: "3.0.3"
+old_paths:
+  /me:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: {type: object, required: [id, email], properties: {id: {type: integer}, email: {type: string}, bio: {type: string}}}
+new_paths:
+  /me:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: {type: object, required: [id, email], properties: {id: {type: integer}, email: {type: string}, bio: {type: string}, avatar: {type: string}}}
+expected: [response-property-added]

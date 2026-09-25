@@ -1,0 +1,18 @@
+version: "3.0.3"
+old_paths:
+  /me:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: {type: object, properties: {n: {type: integer}}}
+new_paths:
+  /me:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: {type: object, properties: {n: {type: number}}}
+expected: [type-changed]

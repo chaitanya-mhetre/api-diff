@@ -1,0 +1,17 @@
+old_paths:
+  /items:
+    get:
+      parameters: [{$ref: "#/components/parameters/Page"}]
+      responses: {"200": {description: ok}}
+new_paths:
+  /items:
+    get:
+      parameters: [{$ref: "#/components/parameters/Page"}]
+      responses: {"200": {description: ok}}
+old_components:
+  parameters:
+    Page: {name: page, in: query, schema: {type: integer}}
+new_components:
+  parameters:
+    Page: {name: page, in: query, required: true, schema: {type: integer}}
+expected: [parameter-became-required]

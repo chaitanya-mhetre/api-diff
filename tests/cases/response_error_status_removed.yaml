@@ -1,0 +1,5 @@
+old_paths:
+  /a: {get: {responses: {"200": {description: x}, "404": {description: x}}}}
+new_paths:
+  /a: {get: {responses: {"200": {description: x}}}}
+expected: [response-status-removed]

@@ -1,0 +1,19 @@
+old_paths:
+  /users:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, properties: {note: {type: string, nullable: true}}}
+      responses: {"201": {description: created}}
+new_paths:
+  /users:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, properties: {note: {type: string}}}
+      responses: {"201": {description: created}}
+expected: [request-became-non-nullable]

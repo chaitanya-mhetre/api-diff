@@ -1,0 +1,18 @@
+version: "3.0.3"
+old_paths:
+  /me:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: {type: object, properties: {name: {type: string}}}
+new_paths:
+  /me:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: {type: object, properties: {name: {type: string, nullable: true}}}
+expected: [response-became-nullable]

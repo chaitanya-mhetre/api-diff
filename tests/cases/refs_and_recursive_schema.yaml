@@ -1,0 +1,32 @@
+description: $ref'd recursive tree schema; a nested change is still found and recursion terminates.
+old_paths:
+  /tree:
+    get:
+      responses:
+        "200": {$ref: "#/components/responses/Tree"}
+new_paths:
+  /tree:
+    get:
+      responses:
+        "200": {$ref: "#/components/responses/Tree"}
+old_components:
+  responses:
+    Tree: {description: ok, content: {application/json: {schema: {$ref: "#/components/schemas/Node"}}}}
+  schemas:
+    Node:
+      type: object
+      required: [value, children]
+      properties:
+        value: {type: integer}
+        children: {type: array, items: {$ref: "#/components/schemas/Node"}}
+new_components:
+  responses:
+    Tree: {description: ok, content: {application/json: {schema: {$ref: "#/components/schemas/Node"}}}}
+  schemas:
+    Node:
+      type: object
+      required: [value, children]
+      properties:
+        value: {type: string}
+        children: {type: array, items: {$ref: "#/components/schemas/Node"}}
+expected: [type-changed]
