@@ -1,0 +1,44 @@
+[project]
+name = "api-diff"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Chaitanya Mhetre", email = "mhetrechaitanya06@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2.13.5",
+    "pyyaml>=6.0.3",
+    "typer>=0.27.2",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.6,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "hypothesis>=6.168.1",
+    "mypy>=2.3.1",
+    "pytest>=9.1.1",
+    "ruff>=0.16.9",
+    "types-pyyaml>=6.0.12.20260906",
+]
+
+[project.scripts]
+api-diff = "api_diff.cli:main"
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "N"]
+
+[tool.mypy]
+strict = true
+files = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
